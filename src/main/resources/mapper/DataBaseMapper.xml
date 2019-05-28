@@ -3,16 +3,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 
-<mapper namespace="com.dahuamiao.database.mapper.DataBaseMapper">
+<mapper namespace="com.dahuamiao.mapper.DataBaseMapper">
 
-    <select id="queryTableInfoList" resultType="java.util.Map">
+
+
+
+
+    <select id="queryTableInfoList" resultType="com.dahuamiao.pojo.TableInfo">
         select t.table_name, t.table_comment
           from information_schema.tables t
-          where table_schema='ltms_lite' and table_type='base table';
+          where table_schema= #{dataBaseName} and table_type = #{tableType};
     </select>
 
 
-    <select id="queryTableDetails" resultType="java.util.Map">
+
+
+
+    <select id="queryColumnInfoList" resultType="com.dahuamiao.pojo.ColumnInfo">
         select column_name,
                column_type,
                data_type,
@@ -21,7 +28,7 @@
                column_default,
                column_comment
         from information_schema.columns
-        where table_schema ='ltms_lite' and table_name = #{tablename}
+        where table_schema = #{dataBaseName} and table_name = #{tableName}
     </select>
 
     <select id="queryViewDetails" resultType="java.util.Map">
@@ -30,7 +37,7 @@
             view_definition,
             is_updatable
         FROM information_schema.views
-        where table_schema='ltms_lite'
+        where table_schema= #{dataBaseName}
     </select>
 
 

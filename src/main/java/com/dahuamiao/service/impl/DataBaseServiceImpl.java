@@ -1,8 +1,11 @@
 package com.dahuamiao.service.impl;
 
 import com.dahuamiao.mapper.DataBaseMapper;
+import com.dahuamiao.pojo.ColumnInfo;
+import com.dahuamiao.pojo.TableInfo;
 import com.dahuamiao.service.DataBaseService;
 import com.dahuamiao.utils.TableInfo2ExcelUtil;
+import com.dahuamiao.utils.TableType;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -10,11 +13,11 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DataBaseServiceImpl implements DataBaseService {
@@ -23,11 +26,21 @@ public class DataBaseServiceImpl implements DataBaseService {
     DataBaseMapper dataBaseMapper;
 
     @Override
-    public void createTablesInfoExcel() throws Exception{
+    public void createTablesInfoExcel(String firstSheetName, String generateFilePath, String fileName, String dataBaseName) throws Exception{
+        Assert.notNull(firstSheetName, "firstSheetName can not be null!");
+        Assert.notNull(generateFilePath, "generateFilePath can not be null!");
+        Assert.notNull(fileName, "fileName can not be null!");
+        File filePath = new File(generateFilePath);
+        Assert.isTrue(filePath.isDirectory(), "filePath illegal!");
 
-        String firstSheetName = "LITE_LTMS";
-        List<Map<String, String>> tables = dataBaseMapper.queryTableInfoList();
-        File file = new File("D://LITE-LTMS.xlsx");
+        if (!filePath.exists()){
+            filePath.mkdir();
+        }
+
+        List<TableInfo> tables = dataBaseMapper.queryTableInfoList(dataBaseName, TableType.BASETABLE);
+
+        File file = new File(generateFilePath + File.separator + fileName);
+
         XSSFWorkbook workbook = new XSSFWorkbook();
 
         XSSFFont font = workbook.createFont();
@@ -47,10 +60,10 @@ public class DataBaseServiceImpl implements DataBaseService {
 
         int rowNum = 4;
         for( int i = 0; i < tables.size(); i++){
-            Map<String, String> table = tables.get(i);
+            TableInfo table = tables.get(i);
             XSSFCreationHelper creationHelper = workbook.getCreationHelper();
             XSSFHyperlink hyperlink = creationHelper.createHyperlink(HyperlinkType.DOCUMENT);
-            hyperlink.setAddress("#"+ table.get("table_name") +"!A10");
+            hyperlink.setAddress("#"+ table.getTableName() +"!A10");
             sheet.setColumnWidth(4, 40 * 256);
             sheet.setColumnWidth(5, 40 * 256);
             XSSFRow row = sheet.createRow(rowNum);
@@ -60,10 +73,10 @@ public class DataBaseServiceImpl implements DataBaseService {
             cell3.setCellValue(i+1);
             cell3.setCellStyle(cellStyle);
             cell4.setCellStyle(cellStyle2);
-            cell4.setCellValue(table.get("table_name"));
+            cell4.setCellValue(table.getTableName());
             cell4.setHyperlink(hyperlink);
             cell5.setCellStyle(cellStyle);
-            cell5.setCellValue(table.get("table_comment"));
+            cell5.setCellValue(table.getTableComment());
 
 
             ++rowNum;
@@ -71,17 +84,13 @@ public class DataBaseServiceImpl implements DataBaseService {
 
 
         for(int i = 0; i < tables.size(); i++){
-            Map<String, String> table = tables.get(i);
-            List<Map<String, Object>> details = dataBaseMapper.queryTableDetails(table.get("table_name"));
+            TableInfo table = tables.get(i);
+            List<ColumnInfo> details = dataBaseMapper.queryColumnInfoList(dataBaseName, table.getTableName());
             TableInfo2ExcelUtil.createTableInfoExcel(firstSheetName, table, details,workbook, i);
         }
 
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        try {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file)){
             workbook.write(fileOutputStream);
-        }finally {
-            fileOutputStream.flush();
-            fileOutputStream.close();
         }
 
     }

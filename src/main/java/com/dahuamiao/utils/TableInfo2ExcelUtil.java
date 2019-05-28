@@ -1,5 +1,7 @@
 package com.dahuamiao.utils;
 
+import com.dahuamiao.pojo.ColumnInfo;
+import com.dahuamiao.pojo.TableInfo;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -12,10 +14,10 @@ import java.util.Map;
 public class TableInfo2ExcelUtil {
 
 
-    public static void createTableInfoExcel(String firstSheetName, Map<String, String> tableInfo, List<Map<String, Object>> tableDetails, XSSFWorkbook workbook, int i){
+    public static void createTableInfoExcel(String firstSheetName, TableInfo tableInfo, List<ColumnInfo> columnInfos, XSSFWorkbook workbook, int i){
 
 
-        XSSFSheet sheet = workbook.createSheet(tableInfo.get("table_name"));
+        XSSFSheet sheet = workbook.createSheet(tableInfo.getTableName());
 
         XSSFFont font = workbook.createFont();
         font.setUnderline(XSSFFont.U_DOUBLE);
@@ -46,8 +48,8 @@ public class TableInfo2ExcelUtil {
         cell1.setCellStyle(cellStyle);
         XSSFCell cell2 = row1.createCell(1);
         cell2.setCellStyle(cellStyle);
-        cell1.setCellValue(tableInfo.get("table_name"));
-        cell2.setCellValue(tableInfo.get("table_comment"));
+        cell1.setCellValue(tableInfo.getTableName());
+        cell2.setCellValue(tableInfo.getTableComment());
         XSSFCell cell3 = row1.createCell(2);
         cell3.setCellStyle(linkCellStyle);
         cell3.setCellValue("返回");
@@ -77,29 +79,29 @@ public class TableInfo2ExcelUtil {
         c7.setCellValue("备注");
 
         int rowNum = 2;
-        for( Map<String,Object> map: tableDetails){
+        for( ColumnInfo column: columnInfos){
             XSSFRow row = sheet.createRow(rowNum);
             XSSFCell cc1 = row.createCell(0);
             cc1.setCellStyle(cellStyle);
-            cc1.setCellValue(String.valueOf(map.get("column_name")));
+            cc1.setCellValue(String.valueOf(column.getColumnName()));
             XSSFCell cc2 = row.createCell(1);
             cc2.setCellStyle(cellStyle);
-            cc2.setCellValue(String.valueOf(map.get("column_type")));
+            cc2.setCellValue(String.valueOf(column.getColumnType()));
             XSSFCell cc3 = row.createCell(2);
             cc3.setCellStyle(cellStyle);
-            cc3.setCellValue(String.valueOf(map.get("data_type")));
+            cc3.setCellValue(String.valueOf(column.getDataType()));
             XSSFCell cc4 = row.createCell(3);
             cc4.setCellStyle(cellStyle);
-            cc4.setCellValue(String.valueOf(map.get("character_maximum_length")));
+            cc4.setCellValue(String.valueOf(column.getCharacterMaximumLength()));
             XSSFCell cc5 = row.createCell(4);
             cc5.setCellStyle(cellStyle);
-            cc5.setCellValue(String.valueOf(map.get("is_nullable")));
+            cc5.setCellValue(String.valueOf(column.getIsNullable()));
             XSSFCell cc6 = row.createCell(5);
             cc6.setCellStyle(cellStyle);
-            cc6.setCellValue(String.valueOf(map.get("column_default")));
+            cc6.setCellValue(String.valueOf(column.getColumnDefault()));
             XSSFCell cc7 = row.createCell(6);
             cc7.setCellStyle(cellStyle);
-            cc7.setCellValue(String.valueOf(map.get("column_comment")));
+            cc7.setCellValue(String.valueOf(column.getColumnComment()));
 
             ++rowNum;
 
