@@ -21,12 +21,6 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>1.3.2</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -51,40 +45,11 @@
             <version>1.2.40</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>4.0.1</version>
         </dependency>
-
-
-
-
-
-        <!-- easypoi -->
-        <dependency>
-            <groupId>cn.afterturn</groupId>
-            <artifactId>easypoi-base</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.afterturn</groupId>
-            <artifactId>easypoi-web</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.afterturn</groupId>
-            <artifactId>easypoi-annotation</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-
 
     </dependencies>
 
